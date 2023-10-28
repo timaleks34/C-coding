@@ -1,58 +1,85 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+// задаём размеры сетки для игры
 #define MAX_ROWS 10
 #define MAX_COLS 10
-int countNeighbors(int board[][MAX_COLS], int row, int col);
-void displayBoard(int board[][MAX_COLS]);
-void lifeGame(int board[][MAX_COLS]);
-int main() {
-    srand(time(0));
-    int board[MAX_ROWS][MAX_COLS];
-    for (int i = 0; i < MAX_ROWS; i++) {
-        for (int j = 0; j < MAX_COLS; j++) {
-            board[i][j] = rand() % 2;
+int generate_random(int max) {
+    return rand() % max;
+}
+// генерируем сетку
+void create_grid(int grid[MAX_ROWS][MAX_COLS]) {
+    int i, j;
+    for (i = 0; i < MAX_ROWS; i++) {
+        for (j = 0; j < MAX_COLS; j++) {
+            grid[i][j] = generate_random(2);
         }
     }
-    lifeGame(board);
-    return 0;
 }
-int countNeighbors(int board[][MAX_COLS], int row, int col) {
-    int count = 0;
-    for (int i = row - 1; i <= row + 1; i++) {
-        for (int j = col - 1; j <= col + 1; j++) {
-            if (i >= 0 && i < MAX_ROWS && j >= 0 && j < MAX_COLS) {
-                count += board[i][j];
-            }
-        }
-    }
-    count -= board[row][col];
-    return count;
-}
-void displayBoard(int board[][MAX_COLS]) {
-    for (int i = 0; i < MAX_ROWS; i++) {
-        for (int j = 0; j < MAX_COLS; j++) {
-            printf("%d ", board[i][j]);
+// выводим сетку
+void print_grid(int grid[MAX_ROWS][MAX_COLS]) {
+    int i, j;
+    for (i = 0; i < MAX_ROWS; i++) {
+        for (j = 0; j < MAX_COLS; j++) {
+            printf("%d ", grid[i][j]);
         }
         printf("\n");
     }
 }
-void lifeGame(int board[][MAX_COLS]) {
-    int newBoard[MAX_ROWS][MAX_COLS];
-    for (int i = 0; i < MAX_ROWS; i++) {
-        for (int j = 0; j < MAX_COLS; j++) {
-            int neighbors = countNeighbors(board, i, j);
-            if (board[i][j] == 1 && (neighbors < 2 || neighbors > 3)) {
-                newBoard[i][j] = 0;
-            } else if (board[i][j] == 0 && neighbors == 3) {
-                newBoard[i][j] = 1;
+// начинаем игру
+void game_of_life(int grid[MAX_ROWS][MAX_COLS]) {
+    int i, j, count, next_grid[MAX_ROWS][MAX_COLS];
+
+    for (i = 0; i < MAX_ROWS; i++) {
+        for (j = 0; j < MAX_COLS; j++) {
+            count = 0;
+            // проверка наличия "соседей"
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    if (x == 0 && y == 0) continue;
+                    int nx = (i + x + MAX_ROWS) % MAX_ROWS;
+                    int ny = (j + y + MAX_COLS) % MAX_COLS;
+
+                    count += grid[nx][ny];
+                }
+            }
+            if (grid[i][j] == 1) {
+                if (count < 2 || count > 3) {
+                    next_grid[i][j] = 0;
+                } else {
+                    next_grid[i][j] = 1;
+                }
             } else {
-                newBoard[i][j] = board[i][j];
+                if (count == 3) {
+                    next_grid[i][j] = 1;
+                } else {
+                    next_grid[i][j] = 0;
+                }
             }
         }
     }
-    printf("Initial game board:\n");
-    displayBoard(board);
-    printf("Updated game board:\n");
-    displayBoard(newBoard);
+    // обновляем сетку следующей генерацией
+    for (i = 0; i < MAX_ROWS; i++) {
+        for (j = 0; j < MAX_COLS; j++) {
+            grid[i][j] = next_grid[i][j];
+        }
+    }
+}
+int main() {
+    int grid[MAX_ROWS][MAX_COLS];
+    int generation = 0;
+    srand(time(NULL));
+    create_grid(grid);
+    printf("Generation %d\n", generation);
+    print_grid(grid);
+    while (1) {
+        char choice;
+        printf("Generate next generation? (y/n): ");
+        scanf(" %c", &choice);
+        if (choice == 'n') break;
+        game_of_life(grid);
+        printf("Generation %d\n", ++generation);
+        print_grid(grid);
+    }
+    return 0;
 }
