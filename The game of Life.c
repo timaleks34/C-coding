@@ -3,7 +3,6 @@
 #include <time.h>
 #define MAX_ROWS 10
 #define MAX_COLS 10
-
 int countNeighbors(int board[][MAX_COLS], int row, int col);
 void displayBoard(int board[][MAX_COLS]);
 void lifeGame(int board[][MAX_COLS]);
@@ -18,7 +17,6 @@ int main() {
     lifeGame(board);
     return 0;
 }
-
 int countNeighbors(int board[][MAX_COLS], int row, int col) {
     int count = 0;
     for (int i = row - 1; i <= row + 1; i++) {
@@ -31,7 +29,6 @@ int countNeighbors(int board[][MAX_COLS], int row, int col) {
     count -= board[row][col];
     return count;
 }
-
 void displayBoard(int board[][MAX_COLS]) {
     for (int i = 0; i < MAX_ROWS; i++) {
         for (int j = 0; j < MAX_COLS; j++) {
@@ -40,7 +37,6 @@ void displayBoard(int board[][MAX_COLS]) {
         printf("\n");
     }
 }
-
 void lifeGame(int board[][MAX_COLS]) {
     int newBoard[MAX_ROWS][MAX_COLS];
     for (int i = 0; i < MAX_ROWS; i++) {
@@ -55,10 +51,8 @@ void lifeGame(int board[][MAX_COLS]) {
             }
         }
     }
-
     printf("Initial game board:\n");
     displayBoard(board);
-
     printf("Updated game board:\n");
     displayBoard(newBoard);
 }
