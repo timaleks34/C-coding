@@ -70,7 +70,7 @@ int main() {
     int generation = 0;
     srand(time(NULL));
     create_grid(grid);
-    printf("Generation %d\n", generation);
+    printf("Генерация %d\n", generation);
     print_grid(grid);
     while (1) {
         char choice;
@@ -78,7 +78,7 @@ int main() {
         scanf(" %c", &choice);
         if (choice == 'N') break;
         game_of_life(grid);
-        printf("Generation %d\n", ++generation);
+        printf("Генерация %d\n", ++generation);
         print_grid(grid);
     }
     return 0;
